@@ -37,6 +37,10 @@ public class DnDPointBuyCalculator implements Calculator{
                     }
                 }
                 scanner.nextLine();
+            } else if (leftPoints != 0){
+                System.out.println("You still have " + leftPoints + "points left.");
+                System.out.println("Repeat \"EXIT\" if you really want to exit or press Enter key otherwise");
+                input = scanner.nextLine();
             }
         } while (!(input.equals("EXIT") || input.equals("\"EXIT\"")));
     }
