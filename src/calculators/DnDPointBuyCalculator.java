@@ -10,9 +10,9 @@ public class DnDPointBuyCalculator implements Calculator {
         Characteristic[] characteristics = {Characteristic.STRENGTH, Characteristic.CONSTITUTION,
                 Characteristic.DEXTERITY, Characteristic.INTELLIGENCE, Characteristic.WISDOM, Characteristic.CHARISMA};
         int leftPoints = 0;
-        calculatorApp.println("To exit print \"EXIT\"");
         String input;
         do {
+            calculatorApp.println("To exit print \"EXIT\"");
             calculatorApp.println("Current stats:");
             for (Characteristic characteristic : characteristics) {
                 calculatorApp.println(characteristic.toString());
@@ -35,11 +35,12 @@ public class DnDPointBuyCalculator implements Calculator {
                     case 1 -> leftPoints = characteristics[Integer.parseInt(input)].decrease(leftPoints, calculatorApp);
                 }
             } else if (leftPoints != 0){
-                calculatorApp.println("You still have " + leftPoints + "points left.");
+                calculatorApp.println("You still have " + leftPoints + " points left.");
                 calculatorApp.println("Repeat \"EXIT\" if you really want to exit or press Enter key otherwise");
                 input = calculatorApp.readLine();
             }
         } while (!(input.equals("EXIT") || input.equals("\"EXIT\"")));
+        calculatorApp.close();
     }
 }
 
