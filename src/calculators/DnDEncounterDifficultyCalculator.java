@@ -1,6 +1,8 @@
+package calculators;
+
 import java.util.Scanner;
 
-public class DnDEncounterDifficultyCalculator implements Calculator{
+public class DnDEncounterDifficultyCalculator implements Calculator {
     @Override
     public void work(Scanner scanner) {
         DifficultyLevel[] thresholds = new DifficultyLevel[]{DifficultyLevel.EASY,

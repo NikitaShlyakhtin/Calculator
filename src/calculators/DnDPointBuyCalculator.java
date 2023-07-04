@@ -1,6 +1,8 @@
+package calculators;
+
 import java.util.Scanner;
 
-public class DnDPointBuyCalculator implements Calculator{
+public class DnDPointBuyCalculator implements Calculator {
     @Override
     public void work(Scanner scanner) {
         Characteristic[] characteristics = {Characteristic.STRENGTH, Characteristic.CONSTITUTION,

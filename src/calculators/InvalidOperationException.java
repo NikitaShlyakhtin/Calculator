@@ -1,3 +1,5 @@
+package calculators;
+
 public class InvalidOperationException extends Exception {
     String expression;
     InvalidOperationException(String expression) {
