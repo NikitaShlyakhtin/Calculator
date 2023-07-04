@@ -74,7 +74,7 @@ public class BasicCalculator implements Calculator {
                     shunt.push(perform(elem, operand1, operand2));
                 }
             }
-            System.out.println(shunt.pop());
+            calculatorApp.println(" = " + shunt.pop());
             input = calculatorApp.readLine();
         }
     }

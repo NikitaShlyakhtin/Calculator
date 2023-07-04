@@ -12,7 +12,7 @@ public class DnDEncounterDifficultyCalculator implements Calculator {
         calculatorApp.println("How many player characters do you have?");
         int numberOfCharacters = Integer.parseInt(calculatorApp.readLine());
         for (int i = 0; i < numberOfCharacters; i++) {
-            System.out.println("Input level for character " + (i + 1));
+            calculatorApp.println("Input level for character " + (i + 1));
             int level = Integer.parseInt(calculatorApp.readLine());
             for (DifficultyLevel difficultyLevel : thresholds) {
                 difficultyLevel.increaseDifficulty(level);
