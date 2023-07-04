@@ -1,8 +1,9 @@
 //package calculators;
+//import calculatorApp.CalculatorApp;
 //
 //import java.util.Scanner;
 //
-//public class BMIcalculator {
+//public class BMIcalculator implements Calculator {
 //    private double height;
 //    private double weight;
 //
