@@ -1,13 +1,11 @@
 package calculators;
 
 import calculatorApp.CalculatorApp;
-import com.googlecode.lanterna.TextColor;
 import kong.unirest.Unirest;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 class Currency {
     public final String code;

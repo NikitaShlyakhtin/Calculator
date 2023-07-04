@@ -3,7 +3,6 @@ import calculators.BasicCalculator;
 import calculators.Calculator;
 import calculators.CurrencyCalculator;
 import calculators.InvalidOperationException;
-import com.googlecode.lanterna.TextColor;
 
 import java.io.IOException;
 import java.util.Arrays;
