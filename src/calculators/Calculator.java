@@ -1,7 +1,9 @@
 package calculators;
 
-import java.util.Scanner;
+import calculatorApp.CalculatorApp;
+
+import java.io.IOException;
 
 public interface Calculator {
-    void work(Scanner scanner) throws InvalidOperationException;
+    void work(CalculatorApp calculatorApp) throws InvalidOperationException, IOException;
 }

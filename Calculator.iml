@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="konghq.unirest.java" level="project" />
+    <orderEntry type="library" name="googlecode.lanterna" level="project" />
   </component>
 </module>

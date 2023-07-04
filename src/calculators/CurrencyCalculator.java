@@ -1,7 +1,10 @@
 package calculators;
 
+import calculatorApp.CalculatorApp;
+import com.googlecode.lanterna.TextColor;
 import kong.unirest.Unirest;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -40,18 +43,18 @@ class Currency {
 
 public class CurrencyCalculator implements Calculator {
     @Override
-    public void work(Scanner scanner) {
-        System.out.println("Available operations: <n> rub to usd," +
+    public void work(CalculatorApp calculatorApp) throws IOException {
+        calculatorApp.println("Available operations: <n> rub to usd," +
                 " <n> rub to eur, <n> usd to rub, <n> usd to eur, <n> eur to rub, <n> eur to usd.");
-        System.out.println("Please, input operands separated by space");
-        System.out.println("To stop working, write STOP");
+        calculatorApp.println("Please, input operands separated by space");
+        calculatorApp.println("To stop working, write STOP");
 
         Map<String, Currency> currencies = new HashMap<>();
         currencies.put("USD", new Currency("USD"));
         currencies.put("EUR", new Currency("EUR"));
         currencies.put("RUB", new Currency("RUB"));
 
-        String input = scanner.nextLine();
+        String input = calculatorApp.readLine();
 
         while (!input.equals("STOP")) {
             String[] inputArray = input.split(" ");
@@ -62,12 +65,13 @@ public class CurrencyCalculator implements Calculator {
 
             if (sourceCurrency != null && targetCurrency != null) {
                 String result = String.format("%.02f", sourceCurrency.convertTo(amount, targetCurrency));
-                System.out.print(amount + " " + sourceCurrency.code + " = " + result + " " + targetCurrency.code);
+                calculatorApp.print(" | " + result + " " + targetCurrency.code);
             } else {
-                System.out.println("Invalid currency pair.");
+                calculatorApp.println("Invalid currency pair.");
             }
 
-            input = scanner.nextLine();
+            input = calculatorApp.readLine();
         }
+        calculatorApp.close();
     }
 }

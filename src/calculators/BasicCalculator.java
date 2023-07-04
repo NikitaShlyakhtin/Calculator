@@ -1,5 +1,9 @@
 package calculators;
 
+import calculatorApp.CalculatorApp;
+import com.googlecode.lanterna.TextColor;
+
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -7,11 +11,12 @@ import java.util.Stack;
 public class BasicCalculator implements Calculator {
 
     @Override
-    public void work(Scanner scanner) throws InvalidOperationException {
-        System.out.println("Available operations: \"+\", \"-\", \"*\", \"/\", \"min ( a , b )\", \"max ( a , b )\"");
-        System.out.println("Please, input operands separated by space");
-        System.out.println("To stop working, write STOP");
-        String input = scanner.nextLine();
+    public void work(CalculatorApp calculatorApp) throws InvalidOperationException, IOException {
+        calculatorApp.println("Available operations: \"+\", \"-\", \"*\", \"/\", \"min ( a , b )\", \"max ( a , b )\"");
+        calculatorApp.println("Please, input operands separated by space");
+        calculatorApp.println("To stop working, write STOP");
+
+        String input = calculatorApp.readLine();
         while (!input.equals("STOP")) {
             Stack<String> shunt = new Stack<>();
             String reorganisedExpression = "";
@@ -70,7 +75,7 @@ public class BasicCalculator implements Calculator {
                 }
             }
             System.out.println(shunt.pop());
-            input = scanner.nextLine();
+            input = calculatorApp.readLine();
         }
     }
 

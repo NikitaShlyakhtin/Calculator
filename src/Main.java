@@ -1,38 +1,46 @@
+import calculatorApp.CalculatorApp;
 import calculators.BasicCalculator;
 import calculators.Calculator;
 import calculators.CurrencyCalculator;
 import calculators.InvalidOperationException;
+import com.googlecode.lanterna.TextColor;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+enum CalculatorTypes {
+    BASIC,
+    CURRENCY
+}
 
 public class Main {
-    public static void main(String[] args) {
-        try {
-            Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException, InvalidOperationException {
+        CalculatorApp calculatorApp = new CalculatorApp();
 
-            System.out.println("Select calculator");
-            System.out.println("0 - Basic calculators.Calculator (arithmetic calculations)");
-            System.out.println("1 - Currency calculator");
+        List<String> welcomeMessage = Arrays.asList("Welcome to Calculator!",
+                "Please, select calculator:",
+                "0 - Basic calculator",
+                "1 - Currency calculator");
 
-            Calculator calculator;
+        for (String line : welcomeMessage) {
+            calculatorApp.println(line);
+        }
 
-            int selectedType = scanner.nextInt();
-            scanner.nextLine();
+        CalculatorTypes calculatorType = CalculatorTypes.values()[Integer.parseInt(calculatorApp.readLine())];
+        Calculator calculator;
 
-            switch (selectedType) {
-                case 0 -> {
-                    calculator = new BasicCalculator();
-                    calculator.work(scanner);
-                }
-                case 1 -> {
-                    calculator = new CurrencyCalculator();
-                    calculator.work(scanner);
-                }
-                default -> System.out.println("Not a valid type of calculator");
+        switch (calculatorType) {
+            case BASIC -> {
+                calculator = new BasicCalculator();
+                calculator.work(calculatorApp);
             }
+            case CURRENCY -> {
+                calculator = new CurrencyCalculator();
+                calculator.work(calculatorApp);
+            }
+            default -> System.out.println("Not a valid type of calculator");
         }
-        catch (InvalidOperationException e) {
-            e.getMessage();
-        }
+
     }
 }
