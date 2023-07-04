@@ -1,8 +1,5 @@
 import calculatorApp.CalculatorApp;
-import calculators.BasicCalculator;
-import calculators.Calculator;
-import calculators.CurrencyCalculator;
-import calculators.InvalidOperationException;
+import calculators.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,7 +7,9 @@ import java.util.List;
 
 enum CalculatorTypes {
     BASIC,
-    CURRENCY
+    CURRENCY,
+    DND_ENCOUNTER,
+    DND_POINT_BUY
 }
 
 public class Main {
@@ -20,7 +19,9 @@ public class Main {
         List<String> welcomeMessage = Arrays.asList("Welcome to Calculator!",
                 "Please, select calculator:",
                 "0 - Basic calculator",
-                "1 - Currency calculator");
+                "1 - Currency calculator",
+                "2 - DnD Encounter Difficulty calculator",
+                "3 - DnD Point-buy calculator");
 
         for (String line : welcomeMessage) {
             calculatorApp.println(line);
@@ -38,7 +39,15 @@ public class Main {
                 calculator = new CurrencyCalculator();
                 calculator.work(calculatorApp);
             }
-            default -> System.out.println("Not a valid type of calculator");
+            case DND_ENCOUNTER -> {
+                calculator = new DnDEncounterDifficultyCalculator();
+                calculator.work(calculatorApp);
+            }
+            case DND_POINT_BUY -> {
+                calculator = new DnDPointBuyCalculator();
+                calculator.work(calculatorApp);
+            }
+            default -> calculatorApp.println("Not a valid type of calculator");
         }
 
     }
