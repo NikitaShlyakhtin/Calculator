@@ -9,7 +9,8 @@ enum CalculatorTypes {
     BASIC,
     CURRENCY,
     DND_ENCOUNTER,
-    DND_POINT_BUY
+    DND_POINT_BUY,
+    BMI
 }
 
 public class Main {
@@ -21,7 +22,8 @@ public class Main {
                 "0 - Basic calculator",
                 "1 - Currency calculator",
                 "2 - DnD Encounter Difficulty calculator",
-                "3 - DnD Point-buy calculator");
+                "3 - DnD Point-buy calculator",
+                "4 - BMI calculator");
 
         for (String line : welcomeMessage) {
             calculatorApp.println(line);
@@ -45,6 +47,10 @@ public class Main {
             }
             case DND_POINT_BUY -> {
                 calculator = new DnDPointBuyCalculator();
+                calculator.work(calculatorApp);
+            }
+            case BMI -> {
+                calculator = new BMICalculator();
                 calculator.work(calculatorApp);
             }
             default -> calculatorApp.println("Not a valid type of calculator");
