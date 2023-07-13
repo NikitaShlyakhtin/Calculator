@@ -11,7 +11,9 @@ public class BasicCalculator implements Calculator {
 
     @Override
     public void work(CalculatorApp calculatorApp) throws IOException {
-        calculatorApp.println("Available operations: \"+\", \"-\", \"*\", \"/\", \"min ( a , b )\", \"max ( a , b )\"");
+        calculatorApp.println("Available operations:");
+        calculatorApp.println("Basic arithmetic operations: \"+\", \"-\", \"*\", \"/\", \"pow ( a , b )\"");
+        calculatorApp.println("Comparison operations: \"min ( a , b )\", \"max ( a , b )\"");
         calculatorApp.println("Please, input operands separated by space");
         calculatorApp.println("Double numbers should be input via \".\"");
         calculatorApp.println("To stop working, write STOP");
@@ -21,7 +23,7 @@ public class BasicCalculator implements Calculator {
             try {
                 calculatorApp.print(" = " + expression.perform());
             } catch (NotPerformableTokenException | NotParsableTokenException | DivisionByZeroException |
-                     InvalidOperationException e) {
+                     InvalidOperationException | UndefinedBehaviourException e) {
                 calculatorApp.println(e.getMessage());
             }
             input = calculatorApp.readLine();
@@ -37,7 +39,7 @@ class PerformedExpression {
     }
 
     public String perform() throws NotPerformableTokenException,
-            NotParsableTokenException, DivisionByZeroException, InvalidOperationException {
+            NotParsableTokenException, DivisionByZeroException, InvalidOperationException, UndefinedBehaviourException {
         ArrayList<Token> reorganisedExpression = shunt.reorganise();
         Stack<Token> royalty = new Stack<>();
         for (Token token : reorganisedExpression) {
@@ -83,7 +85,7 @@ class Shunt {
                         }
                     }
                 }
-                case OPEN_BRACKET, MIN, MAX -> shunt.push(token);
+                case OPEN_BRACKET, MIN, MAX, POWER -> shunt.push(token);
                 default -> {
                     if (shunt.isEmpty() || token.isBigger(shunt.peek())) {
                         shunt.push(token);
@@ -129,6 +131,7 @@ class ParsedTokens {
                         case "(" -> tokens.add(new Token(TokenType.OPEN_BRACKET, token));
                         case ")" -> tokens.add(new Token(TokenType.CLOSE_BRACKET, token));
                         case "," -> tokens.add(new Token(TokenType.COMMA, token));
+                        case "pow" -> tokens.add(new Token(TokenType.POWER, token));
                         default -> throw new InvalidOperationException(token);
                     }
                 }
@@ -151,6 +154,7 @@ class ParsedTokens {
                 case "(" -> tokens.add(new Token(TokenType.OPEN_BRACKET, token));
                 case ")" -> tokens.add(new Token(TokenType.CLOSE_BRACKET, token));
                 case "," -> tokens.add(new Token(TokenType.COMMA, token));
+                case "pow" -> tokens.add(new Token(TokenType.POWER, token));
                 default -> throw new InvalidOperationException(token);
             }
         }
@@ -168,7 +172,7 @@ class Token {
     }
 
     public Token perform(Token firstToken, Token secondToken)
-            throws NotPerformableTokenException, NotParsableTokenException, DivisionByZeroException {
+            throws NotPerformableTokenException, NotParsableTokenException, DivisionByZeroException, UndefinedBehaviourException {
         switch (type) {
             case MAX -> {
                 return new Token(TokenType.NUMBER,
@@ -192,6 +196,14 @@ class Token {
             }
             case MULTIPLY -> {
                 return new Token(TokenType.NUMBER, Double.toString(firstToken.parseDouble() * secondToken.parseDouble()));
+            }
+            case POWER -> {
+                if (firstToken.parseDouble() == 0 && secondToken.parseDouble() <= 0
+                        || firstToken.parseDouble() < 0 && secondToken.parseDouble() % 1 != 0) {
+                    throw new UndefinedBehaviourException();
+                }
+                return new Token(TokenType.NUMBER, Double.toString(Math.pow(firstToken.parseDouble(),
+                        secondToken.parseDouble())));
             }
             default -> throw new NotPerformableTokenException(value);
         }
@@ -225,7 +237,8 @@ enum TokenType {
     MAX,
     OPEN_BRACKET,
     CLOSE_BRACKET,
-    COMMA
+    COMMA,
+    POWER
 }
 
 class NotPerformableTokenException extends Exception {
@@ -266,5 +279,12 @@ class InvalidOperationException extends Exception {
     @Override
     public String getMessage() {
         return "Operation " + expression + " is not a valid operation, error in the input";
+    }
+}
+
+class UndefinedBehaviourException extends Exception {
+    @Override
+    public String getMessage() {
+        return "The behaviour of the expression is undefined";
     }
 }
