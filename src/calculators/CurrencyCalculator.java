@@ -70,6 +70,5 @@ public class CurrencyCalculator implements Calculator {
 
             input = calculatorApp.readLine();
         }
-        calculatorApp.close();
     }
 }
