@@ -11,7 +11,8 @@ enum CalculatorTypes {
     DND_ENCOUNTER,
     DND_POINT_BUY,
     BMI,
-    TEMPERATURE
+    TEMPERATURE,
+    MATRIX
 }
 
 public class Main {
@@ -25,7 +26,8 @@ public class Main {
                 "2 - DnD Encounter Difficulty calculator",
                 "3 - DnD Point-buy calculator",
                 "4 - BMI calculator",
-                "5 - Temperature calculator");
+                "5 - Temperature calculator",
+                "6 - Matrix calculator");
 
         for (String line : welcomeMessage) {
             calculatorApp.println(line);
@@ -57,6 +59,10 @@ public class Main {
             }
             case TEMPERATURE -> {
                 calculator = new TemperatureCalculator();
+                calculator.work(calculatorApp);
+            }
+            case MATRIX -> {
+                calculator = new MatrixCalculator();
                 calculator.work(calculatorApp);
             }
             default -> calculatorApp.println("Not a valid type of calculator");
