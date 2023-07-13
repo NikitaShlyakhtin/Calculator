@@ -46,6 +46,7 @@ public class TemperatureCalculator implements Calculator {
                 calculatorApp.println(conversion.convert());
             }
         }
+        calculatorApp.readLine();
     }
 }
 

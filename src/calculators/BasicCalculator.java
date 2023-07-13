@@ -119,7 +119,7 @@ class ParsedTokens {
         String token = "";
         while (index < input.length()) {
             if (input.charAt(index) == ' ') {
-                if (token.matches("\\d*(\\.\\d*)?")) {
+                if (token.matches("-?\\d+(\\.\\d+)?")) {
                     tokens.add(new Token(TokenType.NUMBER, token));
                 } else {
                     switch (token) {

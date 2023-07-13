@@ -21,6 +21,7 @@ public class DnDEncounterDifficultyCalculator implements Calculator {
         calculatorApp.println("How many monsters will they face?");
         Monsters monsters = new Monsters(Integer.parseInt(calculatorApp.readLine()));
         monsters.count(calculatorApp, thresholds, numberOfCharacters);
+        calculatorApp.readLine();
         calculatorApp.close();
     }
 }

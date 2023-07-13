@@ -6,12 +6,27 @@ import java.io.IOException;
 public class BMICalculator implements Calculator {
     public void work(CalculatorApp calculatorApp) throws IOException {
         calculatorApp.println("Enter height in cm: ");
-        double height = Double.parseDouble(calculatorApp.readLine());
+        double height = 0;
+        do {
+            try {
+                height = Double.parseDouble(calculatorApp.readLine());
+            } catch (Exception e) {
+                calculatorApp.println("Not a number, try again");
+            }
+        } while (height == 0);
         calculatorApp.println("Enter weight in kg: ");
-        double weight = Double.parseDouble(calculatorApp.readLine());
+        double weight = 0;
+        do {
+            try {
+                weight = Double.parseDouble(calculatorApp.readLine());
+            } catch (Exception e) {
+                calculatorApp.println("Not a number, try again");
+            }
+        } while (weight == 0);
         Human human = new Human(height, weight);
         calculatorApp.println("BMI: " + human.BMI);
         calculatorApp.println("Interpretation: " + human.interpretBMI());
+        calculatorApp.readLine();
     }
 }
 
