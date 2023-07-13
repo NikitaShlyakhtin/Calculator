@@ -80,7 +80,8 @@ class Shunt {
                     }
                     shunt.pop();
                     if (!shunt.isEmpty()) {
-                        if (shunt.peek().type == TokenType.MAX || shunt.peek().type == TokenType.MIN) {
+                        if (shunt.peek().type == TokenType.MAX || shunt.peek().type == TokenType.MIN
+                                || shunt.peek().type == TokenType.POWER) {
                             reorganisedInput.add(shunt.pop());
                         }
                     }
