@@ -27,12 +27,37 @@ public class DnDPointBuyCalculator implements Calculator {
             calculatorApp.println("5 - charisma");
             input = calculatorApp.readLine();
             if (!(input.equals("EXIT") || input.equals("\"EXIT\""))) {
+                int stat;
+                do {
+                    try {
+                        stat = Integer.parseInt(input);
+                        if (stat < 0 || stat > 5) {
+                            throw new Exception();
+                        }
+                    } catch (Exception e) {
+                        stat = -1;
+                        calculatorApp.println("Not a valid index, try again");
+                        input = calculatorApp.readLine();
+                    }
+                } while (stat == -1);
                 calculatorApp.println("Increase or decrease?");
                 calculatorApp.println("0 - increase");
                 calculatorApp.println("1 - decrease");
-                switch (Integer.parseInt(calculatorApp.readLine())) {
-                    case 0 -> leftPoints = characteristics[Integer.parseInt(input)].increase(leftPoints, calculatorApp);
-                    case 1 -> leftPoints = characteristics[Integer.parseInt(input)].decrease(leftPoints, calculatorApp);
+                int index;
+                do {
+                    try {
+                        index = Integer.parseInt(calculatorApp.readLine());
+                        if (!(index == 0 || index == 1)) {
+                            throw new Exception();
+                        }
+                    } catch (Exception e) {
+                        index = -1;
+                        calculatorApp.println("Not a valid index, try again");
+                    }
+                } while (index == -1);
+                switch (index) {
+                    case 0 -> leftPoints = characteristics[stat].increase(leftPoints, calculatorApp);
+                    case 1 -> leftPoints = characteristics[stat].decrease(leftPoints, calculatorApp);
                 }
             } else if (leftPoints != 0){
                 calculatorApp.println("You still have " + leftPoints + " points left.");

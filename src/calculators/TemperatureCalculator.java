@@ -11,38 +11,63 @@ public class TemperatureCalculator implements Calculator {
         calculatorApp.println("0 - Kelvin");
         calculatorApp.println("1 - Celsius");
         calculatorApp.println("2 - Fahrenheit");
-        int oldScaleIndex = Integer.parseInt(calculatorApp.readLine());
-        while (oldScaleIndex < 0 || oldScaleIndex > 2) {
-            calculatorApp.println("This is not a valid index, select a valid one");
-            oldScaleIndex = Integer.parseInt(calculatorApp.readLine());
-        }
+        int oldScaleIndex;
+        do {
+            try {
+                oldScaleIndex = Integer.parseInt(calculatorApp.readLine());
+                if (oldScaleIndex < 0 || oldScaleIndex > 2) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("This is not a valid index, select a valid one");
+                oldScaleIndex = -1;
+            }
+        } while (oldScaleIndex == -1);
         calculatorApp.println("Select to which scale to convert");
         calculatorApp.println("0 - Kelvin");
         calculatorApp.println("1 - Celsius");
         calculatorApp.println("2 - Fahrenheit");
-        int newScale = Integer.parseInt(calculatorApp.readLine());
+        int newScale;
+        do {
+            try {
+                newScale = Integer.parseInt(calculatorApp.readLine());
+                if (newScale < 0 || newScale > 2) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("This is not a valid index, select a valid one");
+                newScale = -1;
+            }
+        } while (newScale == -1);
         ScaleType newType = ScaleType.KELVIN;
-        while (newScale < 0 || newScale > 2) {
-            calculatorApp.println("This is not a valid index, select a valid one");
-            newScale = Integer.parseInt(calculatorApp.readLine());
-        }
         switch (newScale) {
             case 1 -> newType = ScaleType.CELSIUS;
             case 2 -> newType = ScaleType.FAHRENHEIT;
         }
         calculatorApp.println("Enter temperature");
+        double temperature;
+        boolean trigger = false;
+        do {
+            try {
+                temperature = Double.parseDouble(calculatorApp.readLine());
+                trigger = true;
+            } catch (Exception e) {
+                calculatorApp.println("Not a number, try again");
+                temperature = 0;
+            }
+        } while (temperature == 0 && !trigger);
         Conversion conversion;
         switch (oldScaleIndex) {
             case 0 -> {
-                conversion = new Conversion(new Kelvin(Double.parseDouble(calculatorApp.readLine())), newType);
+                conversion = new Conversion(new Kelvin(temperature), newType);
                 calculatorApp.println(conversion.convert());
             }
             case 1 -> {
-                conversion = new Conversion(new Celsius(Double.parseDouble(calculatorApp.readLine())), newType);
+                conversion = new Conversion(new Celsius(temperature), newType);
                 calculatorApp.println(conversion.convert());
             }
             case 2 -> {
-                conversion = new Conversion(new Fahrenheit(Double.parseDouble(calculatorApp.readLine())), newType);
+                conversion = new Conversion(new Fahrenheit(temperature), newType);
                 calculatorApp.println(conversion.convert());
             }
         }

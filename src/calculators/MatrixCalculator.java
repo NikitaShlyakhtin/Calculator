@@ -38,6 +38,8 @@ public class MatrixCalculator implements Calculator{
                 }
             } catch (IncompatibleSizeException e) {
                 calculatorApp.println(e.getMessage());
+            } catch (Exception e) {
+                calculatorApp.println("Problem with the input, try again");
             }
         } while (operation != 0);
     }
@@ -49,16 +51,51 @@ class Matrix {
     public final Double[][] values;
     Matrix(CalculatorApp calculatorApp) throws IOException {
         calculatorApp.println("Input rows");
-        rows = Integer.parseInt(calculatorApp.readLine());
+        int check;
+        do {
+            try {
+                check = Integer.parseInt(calculatorApp.readLine());
+                if (check < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("Not a valid number, try again");
+                check = 0;
+            }
+        } while (check == 0);
+        rows = check;
         calculatorApp.println("Input columns");
-        columns = Integer.parseInt(calculatorApp.readLine());
+        do {
+            try {
+                check = Integer.parseInt(calculatorApp.readLine());
+                if (check < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("Not a valid number, try again");
+                check = 0;
+            }
+        } while (check == 0);
+        columns = check;
         calculatorApp.println("Input values row by row");
         ArrayList<Double[]> newValues = new ArrayList<>();
         for (int i = 0; i < columns; i++) {
             ArrayList<Double> row = new ArrayList<>();
             String[] input = calculatorApp.readLine().split(" ");
             for (String value : input) {
-                row.add(Double.parseDouble(value));
+                double doubleCheck;
+                boolean trigger = false;
+                do {
+                    try {
+                        doubleCheck = Double.parseDouble(value);
+                        trigger = true;
+                    } catch (Exception e) {
+                        calculatorApp.println(value + " is not a number, what did you want to type?");
+                        value = calculatorApp.readLine();
+                        doubleCheck = 0;
+                    }
+                } while (doubleCheck == 0 && !trigger);
+                row.add(doubleCheck);
             }
             Double[] costyl = new Double[columns];
             newValues.add(row.toArray(costyl));

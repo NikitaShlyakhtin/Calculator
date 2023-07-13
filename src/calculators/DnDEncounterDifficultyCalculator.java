@@ -10,16 +10,50 @@ public class DnDEncounterDifficultyCalculator implements Calculator {
         DifficultyLevel[] thresholds = new DifficultyLevel[]{DifficultyLevel.EASY,
                 DifficultyLevel.MEDIUM, DifficultyLevel.HARD, DifficultyLevel.DEADLY};
         calculatorApp.println("How many player characters do you have?");
-        int numberOfCharacters = Integer.parseInt(calculatorApp.readLine());
+        int numberOfCharacters;
+        do {
+            try {
+                numberOfCharacters = Integer.parseInt(calculatorApp.readLine());
+                if (numberOfCharacters < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("This is not a valid number of player characters");
+                numberOfCharacters = 0;
+            }
+        } while (numberOfCharacters == 0);
         for (int i = 0; i < numberOfCharacters; i++) {
             calculatorApp.println("Input level for character " + (i + 1));
-            int level = Integer.parseInt(calculatorApp.readLine());
+            int level;
+            do {
+                try {
+                    level = Integer.parseInt(calculatorApp.readLine());
+                    if (level < 1 || level > 20) {
+                        throw new Exception();
+                    }
+                } catch (Exception e) {
+                    calculatorApp.println("This is not a valid level");
+                    level = 0;
+                }
+            } while (level == 0);
             for (DifficultyLevel difficultyLevel : thresholds) {
                 difficultyLevel.increaseDifficulty(level);
             }
         }
         calculatorApp.println("How many monsters will they face?");
-        Monsters monsters = new Monsters(Integer.parseInt(calculatorApp.readLine()));
+        int numberOfMonsters;
+        do {
+            try {
+                numberOfMonsters = Integer.parseInt(calculatorApp.readLine());
+                if (numberOfMonsters < 1) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                calculatorApp.println("This is not a valid number of monsters");
+                numberOfMonsters = 0;
+            }
+        } while (numberOfMonsters == 0);
+        Monsters monsters = new Monsters(numberOfMonsters);
         monsters.count(calculatorApp, thresholds, numberOfCharacters);
         calculatorApp.readLine();
         calculatorApp.close();
@@ -37,7 +71,19 @@ class Monsters {
     public void count(CalculatorApp calculatorApp, DifficultyLevel[] thresholds, int numberOfCharacters) throws IOException {
         for (int i = 0; i < numberOfMonsters; i++) {
             calculatorApp.println("Enter XP for monster " + (i + 1));
-            sumXP += Integer.parseInt(calculatorApp.readLine());
+            int xp;
+            do {
+                try {
+                    xp = Integer.parseInt(calculatorApp.readLine());
+                    if (xp < 0) {
+                        throw new Exception();
+                    }
+                } catch (Exception e) {
+                    calculatorApp.println("This is not a valid number for XP");
+                    xp = -1;
+                }
+            } while (xp == -1);
+            sumXP += xp;
         }
         if (numberOfMonsters >= 15) {
             sumXP *= 4;

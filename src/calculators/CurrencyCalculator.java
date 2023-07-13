@@ -55,19 +55,22 @@ public class CurrencyCalculator implements Calculator {
         String input = calculatorApp.readLine();
 
         while (!input.equals("STOP")) {
-            String[] inputArray = input.split(" ");
-            double amount = Double.parseDouble(inputArray[0]);
+            try {
+                String[] inputArray = input.split(" ");
+                double amount = Double.parseDouble(inputArray[0]);
 
-            Currency sourceCurrency = currencies.get(inputArray[1].toUpperCase());
-            Currency targetCurrency = currencies.get(inputArray[3].toUpperCase());
+                Currency sourceCurrency = currencies.get(inputArray[1].toUpperCase());
+                Currency targetCurrency = currencies.get(inputArray[3].toUpperCase());
 
-            if (sourceCurrency != null && targetCurrency != null) {
-                String result = String.format("%.02f", sourceCurrency.convertTo(amount, targetCurrency));
-                calculatorApp.print(" | " + result + " " + targetCurrency.code);
-            } else {
-                calculatorApp.println("Invalid currency pair.");
+                if (sourceCurrency != null && targetCurrency != null) {
+                    String result = String.format("%.02f", sourceCurrency.convertTo(amount, targetCurrency));
+                    calculatorApp.print(" | " + result + " " + targetCurrency.code);
+                } else {
+                    calculatorApp.println("Invalid currency pair.");
+                }
+            } catch (Exception e) {
+                calculatorApp.println("Input is malformed, try again");
             }
-
             input = calculatorApp.readLine();
         }
     }
