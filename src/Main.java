@@ -13,7 +13,7 @@ enum CalculatorTypes {
 }
 
 public class Main {
-    public static void main(String[] args) throws IOException, InvalidOperationException {
+    public static void main(String[] args) throws IOException {
         CalculatorApp calculatorApp = new CalculatorApp();
 
         List<String> welcomeMessage = Arrays.asList("Welcome to Calculator!",
