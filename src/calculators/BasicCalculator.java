@@ -14,6 +14,10 @@ public class BasicCalculator implements Calculator {
         calculatorApp.println("Available operations:");
         calculatorApp.println("Basic arithmetic operations: \"+\", \"-\", \"*\", \"/\", \"pow ( a , b )\"");
         calculatorApp.println("Comparison operations: \"min ( a , b )\", \"max ( a , b )\"");
+        calculatorApp.println("Trigonometric functions: \"sin ( a )\", \"cos ( a )\", \"tan ( a )\", \"cot ( a )\", \"sec ( a )\", \"csc ( a )\"");
+        calculatorApp.println("Inverse trigonometric functions: \"arcsin ( a )\", \"arccos ( a )\", \"arctan ( a )\", \"arccot ( a )\"");
+        calculatorApp.println("Hyperbolic functions: \"sinh ( a )\", \"cosh ( a )\", \"tanh ( a )\", \"coth ( a )\"");
+        calculatorApp.println("Number theory: \"mod ( a , b )\", \"div ( a , b )\", \"ceil ( a )\", \"floor ( a )\", \"abs ( a )\", \"round ( a )\", \"sign ( a )\"");
         calculatorApp.println("Please, input operands separated by space");
         calculatorApp.println("Double numbers should be input via \".\"");
         calculatorApp.println("To stop working, write STOP");
@@ -23,7 +27,8 @@ public class BasicCalculator implements Calculator {
             try {
                 calculatorApp.print(" = " + expression.perform());
             } catch (NotPerformableTokenException | NotParsableTokenException | DivisionByZeroException |
-                     InvalidOperationException | UndefinedBehaviourException e) {
+                     InvalidOperationException | UndefinedBehaviourException | FunctionBreakException |
+                     NotCalculateTokenException e) {
                 calculatorApp.println(e.getMessage());
             }
             input = calculatorApp.readLine();
@@ -38,8 +43,8 @@ class PerformedExpression {
         this.shunt = reorganisedExpression;
     }
 
-    public String perform() throws NotPerformableTokenException,
-            NotParsableTokenException, DivisionByZeroException, InvalidOperationException, UndefinedBehaviourException {
+    public String perform() throws NotPerformableTokenException, NotParsableTokenException, DivisionByZeroException,
+            InvalidOperationException, UndefinedBehaviourException, FunctionBreakException, NotCalculateTokenException {
         ArrayList<Token> reorganisedExpression = shunt.reorganise();
         Stack<Token> royalty = new Stack<>();
         for (Token token : reorganisedExpression) {
@@ -52,6 +57,8 @@ class PerformedExpression {
                 Token operand2 = royalty.pop();
                 Token operand1 = royalty.pop();
                 royalty.push(token.perform(operand1, operand2));
+            } else {
+                royalty.push(token.calculate(royalty.pop()));
             }
         }
         return royalty.pop().value;
@@ -85,12 +92,22 @@ class Shunt {
                     if (!shunt.isEmpty()) {
                         if (shunt.peek().type == TokenType.MAX || shunt.peek().type == TokenType.MIN
                                 || shunt.peek().type == TokenType.POWER || shunt.peek().type == TokenType.MOD
-                                || shunt.peek().type == TokenType.DIV) {
+                                || shunt.peek().type == TokenType.DIV || shunt.peek().type == TokenType.ABS
+                                || shunt.peek().type == TokenType.SINUS || shunt.peek().type == TokenType.COS
+                                || shunt.peek().type == TokenType.TANGENT || shunt.peek().type == TokenType.COTANGENT
+                                || shunt.peek().type == TokenType.SECANT || shunt.peek().type == TokenType.CSC
+                                || shunt.peek().type == TokenType.ASIN || shunt.peek().type == TokenType.ACOS
+                                || shunt.peek().type == TokenType.ATAN || shunt.peek().type == TokenType.ACOT
+                                || shunt.peek().type == TokenType.SINH || shunt.peek().type == TokenType.COSH
+                                || shunt.peek().type == TokenType.TANH || shunt.peek().type == TokenType.COTH
+                                || shunt.peek().type == TokenType.CEIL || shunt.peek().type == TokenType.FLOOR
+                                || shunt.peek().type == TokenType.ROUND || shunt.peek().type == TokenType.SIGN) {
                             reorganisedInput.add(shunt.pop());
                         }
                     }
                 }
-                case OPEN_BRACKET, MIN, MAX, POWER, MOD, DIV -> shunt.push(token);
+                case OPEN_BRACKET, MIN, MAX, POWER, MOD, DIV, ABS, SINUS, COS, TANGENT, COTANGENT, SECANT, CSC, ASIN,
+                        ACOS, ATAN, ACOT, SINH, COSH, TANH, COTH, CEIL, FLOOR, ROUND, SIGN-> shunt.push(token);
                 default -> {
                     if (shunt.isEmpty() || token.isBigger(shunt.peek())) {
                         shunt.push(token);
@@ -139,6 +156,25 @@ class ParsedTokens {
                         case "pow" -> tokens.add(new Token(TokenType.POWER, token));
                         case "mod" -> tokens.add(new Token(TokenType.MOD, token));
                         case "div" -> tokens.add(new Token(TokenType.DIV, token));
+                        case "abs" -> tokens.add(new Token(TokenType.ABS, token));
+                        case "sin" -> tokens.add(new Token(TokenType.SINUS, token));
+                        case "cos" -> tokens.add(new Token(TokenType.COS, token));
+                        case "tan" -> tokens.add(new Token(TokenType.TANGENT, token));
+                        case "cot" -> tokens.add(new Token(TokenType.COTANGENT, token));
+                        case "sec" -> tokens.add(new Token(TokenType.SECANT, token));
+                        case "csc" ->  tokens.add(new Token(TokenType.CSC, token));
+                        case "arcsin" -> tokens.add(new Token(TokenType.ASIN, token));
+                        case "arccos" -> tokens.add(new Token(TokenType.ACOS, token));
+                        case "arctan" -> tokens.add(new Token(TokenType.ATAN, token));
+                        case "arccot" -> tokens.add(new Token(TokenType.ACOT, token));
+                        case "sinh" -> tokens.add(new Token(TokenType.SINH, token));
+                        case "cosh" -> tokens.add(new Token(TokenType.COSH, token));
+                        case "tanh" -> tokens.add(new Token(TokenType.TANH, token));
+                        case "coth" -> tokens.add(new Token(TokenType.COTH, token));
+                        case "ceil" -> tokens.add(new Token(TokenType.CEIL, token));
+                        case "floor" -> tokens.add(new Token(TokenType.FLOOR, token));
+                        case "round" -> tokens.add(new Token(TokenType.ROUND, token));
+                        case "sign" -> tokens.add(new Token(TokenType.SIGN, token));
                         default -> throw new InvalidOperationException(token);
                     }
                 }
@@ -164,6 +200,25 @@ class ParsedTokens {
                 case "pow" -> tokens.add(new Token(TokenType.POWER, token));
                 case "mod" -> tokens.add(new Token(TokenType.MOD, token));
                 case "div" -> tokens.add(new Token(TokenType.DIV, token));
+                case "abs" -> tokens.add(new Token(TokenType.ABS, token));
+                case "sin" -> tokens.add(new Token(TokenType.SINUS, token));
+                case "cos" -> tokens.add(new Token(TokenType.COS, token));
+                case "tan" -> tokens.add(new Token(TokenType.TANGENT, token));
+                case "cot" -> tokens.add(new Token(TokenType.COTANGENT, token));
+                case "sec" -> tokens.add(new Token(TokenType.SECANT, token));
+                case "csc" ->  tokens.add(new Token(TokenType.CSC, token));
+                case "arcsin" -> tokens.add(new Token(TokenType.ASIN, token));
+                case "arccos" -> tokens.add(new Token(TokenType.ACOS, token));
+                case "arctan" -> tokens.add(new Token(TokenType.ATAN, token));
+                case "arccot" -> tokens.add(new Token(TokenType.ACOT, token));
+                case "sinh" -> tokens.add(new Token(TokenType.SINH, token));
+                case "cosh" -> tokens.add(new Token(TokenType.COSH, token));
+                case "tanh" -> tokens.add(new Token(TokenType.TANH, token));
+                case "coth" -> tokens.add(new Token(TokenType.COTH, token));
+                case "ceil" -> tokens.add(new Token(TokenType.CEIL, token));
+                case "floor" -> tokens.add(new Token(TokenType.FLOOR, token));
+                case "round" -> tokens.add(new Token(TokenType.ROUND, token));
+                case "sign" -> tokens.add(new Token(TokenType.SIGN, token));
                 default -> throw new InvalidOperationException(token);
             }
         }
@@ -180,8 +235,98 @@ class Token {
         this.value = value;
     }
 
-    public Token calculate(Token token) throws NotCalculateTokenException {
+    public Token calculate(Token token) throws NotCalculateTokenException, FunctionBreakException {
         switch (type) {
+            case ABS -> {
+                if (Double.parseDouble(token.value) < 0) {
+                    return new Token(TokenType.NUMBER, Double.toString(Double.parseDouble(token.value) * (-1)));
+                } else {
+                    return token;
+                }
+            }
+            case COS -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.cos(Double.parseDouble(token.value))));
+            }
+            case SINUS -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.sin(Double.parseDouble(token.value))));
+            }
+            case TANGENT -> {
+                if (Math.cos(Double.parseDouble(token.value)) == 0) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(Math.tan(Double.parseDouble(token.value))));
+            }
+            case COTANGENT -> {
+                if (Math.sin(Double.parseDouble(token.value)) == 0) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(1.0 / Math.tan(Double.parseDouble(token.value))));
+            }
+            case SECANT -> {
+                if (Math.cos(Double.parseDouble(token.value)) == 0) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(1.0 / Math.cos(Double.parseDouble(token.value))));
+            }
+            case CSC -> {
+                if (Math.sin(Double.parseDouble(token.value)) == 0) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(1.0 / Math.sin(Double.parseDouble(token.value))));
+            }
+            case ASIN -> {
+                if (Double.parseDouble(token.value) < -1 || Double.parseDouble(token.value) > 1) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(Math.asin(Double.parseDouble(token.value))));
+            }
+            case ACOS -> {
+                if (Double.parseDouble(token.value) < -1 || Double.parseDouble(token.value) > 1) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(Math.acos(Double.parseDouble(token.value))));
+            }
+            case ATAN -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.atan(Double.parseDouble(token.value))));
+            }
+            case ACOT -> {
+                if (Double.parseDouble(token.value) == 0) {
+                    return new Token(TokenType.NUMBER, Double.toString(Math.PI / 2));
+                }
+                return new Token(TokenType.NUMBER, Double.toString(Math.atan(1.0 / Double.parseDouble(token.value))));
+            }
+            case COSH -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.cosh(Double.parseDouble(token.value))));
+            }
+            case SINH -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.sinh(Double.parseDouble(token.value))));
+            }
+            case TANH -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.tanh(Double.parseDouble(token.value))));
+            }
+            case COTH -> {
+                if (Double.parseDouble(token.value) == 0) {
+                    throw new FunctionBreakException(value);
+                }
+                return new Token(TokenType.NUMBER, Double.toString(1.0 / Math.tanh(Double.parseDouble(token.value))));
+            }
+            case CEIL -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.ceil(Double.parseDouble(token.value))));
+            }
+            case SIGN -> {
+                if (Double.parseDouble(token.value) == 0) {
+                    return new Token(TokenType.NUMBER, Double.toString(0));
+                } else if (Double.parseDouble(token.value) < 0) {
+                    return new Token(TokenType.NUMBER, Double.toString(-1));
+                }
+                return new Token(TokenType.NUMBER, Double.toString(1));
+            }
+            case FLOOR -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.floor(Double.parseDouble(token.value))));
+            }
+            case ROUND -> {
+                return new Token(TokenType.NUMBER, Double.toString(Math.round(Double.parseDouble(token.value))));
+            }
             default -> throw new NotCalculateTokenException(value);
         }
     }
@@ -287,14 +432,10 @@ enum TokenType {
     ACOS,
     ATAN,
     ACOT,
-    ASEC,
-    ACSC,
     SINH,
     COSH,
     TANH,
     COTH,
-    SECH,
-    CSCH,
     CEIL,
     FLOOR,
     ROUND,
@@ -331,6 +472,18 @@ class NotParsableTokenException extends Exception {
     @Override
     public String getMessage() {
         return "The token " + expression + " cannot be parsed, error in parsing the input";
+    }
+}
+
+class FunctionBreakException extends Exception {
+    String expression;
+    FunctionBreakException(String expression) {
+        this.expression = expression;
+    }
+
+    @Override
+    public String getMessage() {
+        return "Function " + expression + " cannot be calculated at a given point";
     }
 }
 
