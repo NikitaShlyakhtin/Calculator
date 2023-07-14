@@ -45,7 +45,10 @@ class PerformedExpression {
         for (Token token : reorganisedExpression) {
             if (token.type == TokenType.NUMBER) {
                 royalty.push(token);
-            } else {
+            } else if (token.type == TokenType.DIVIDE || token.type == TokenType.DIV || token.type == TokenType.MIN
+                    || token.type == TokenType.MOD || token.type == TokenType.MAX || token.type == TokenType.POWER
+                    || token.type == TokenType.MULTIPLY || token.type == TokenType.MINUS
+                    || token.type == TokenType.PLUS) {
                 Token operand2 = royalty.pop();
                 Token operand1 = royalty.pop();
                 royalty.push(token.perform(operand1, operand2));
@@ -81,12 +84,13 @@ class Shunt {
                     shunt.pop();
                     if (!shunt.isEmpty()) {
                         if (shunt.peek().type == TokenType.MAX || shunt.peek().type == TokenType.MIN
-                                || shunt.peek().type == TokenType.POWER) {
+                                || shunt.peek().type == TokenType.POWER || shunt.peek().type == TokenType.MOD
+                                || shunt.peek().type == TokenType.DIV) {
                             reorganisedInput.add(shunt.pop());
                         }
                     }
                 }
-                case OPEN_BRACKET, MIN, MAX, POWER -> shunt.push(token);
+                case OPEN_BRACKET, MIN, MAX, POWER, MOD, DIV -> shunt.push(token);
                 default -> {
                     if (shunt.isEmpty() || token.isBigger(shunt.peek())) {
                         shunt.push(token);
@@ -133,6 +137,8 @@ class ParsedTokens {
                         case ")" -> tokens.add(new Token(TokenType.CLOSE_BRACKET, token));
                         case "," -> tokens.add(new Token(TokenType.COMMA, token));
                         case "pow" -> tokens.add(new Token(TokenType.POWER, token));
+                        case "mod" -> tokens.add(new Token(TokenType.MOD, token));
+                        case "div" -> tokens.add(new Token(TokenType.DIV, token));
                         default -> throw new InvalidOperationException(token);
                     }
                 }
@@ -156,6 +162,8 @@ class ParsedTokens {
                 case ")" -> tokens.add(new Token(TokenType.CLOSE_BRACKET, token));
                 case "," -> tokens.add(new Token(TokenType.COMMA, token));
                 case "pow" -> tokens.add(new Token(TokenType.POWER, token));
+                case "mod" -> tokens.add(new Token(TokenType.MOD, token));
+                case "div" -> tokens.add(new Token(TokenType.DIV, token));
                 default -> throw new InvalidOperationException(token);
             }
         }
@@ -172,8 +180,15 @@ class Token {
         this.value = value;
     }
 
+    public Token calculate(Token token) throws NotCalculateTokenException {
+        switch (type) {
+            default -> throw new NotCalculateTokenException(value);
+        }
+    }
+
     public Token perform(Token firstToken, Token secondToken)
-            throws NotPerformableTokenException, NotParsableTokenException, DivisionByZeroException, UndefinedBehaviourException {
+            throws NotPerformableTokenException, NotParsableTokenException, DivisionByZeroException,
+            UndefinedBehaviourException {
         switch (type) {
             case MAX -> {
                 return new Token(TokenType.NUMBER,
@@ -184,27 +199,46 @@ class Token {
                         Double.toString(Math.min(firstToken.parseDouble(), secondToken.parseDouble())));
             }
             case PLUS -> {
-                return new Token(TokenType.NUMBER, Double.toString(firstToken.parseDouble() + secondToken.parseDouble()));
+                return new Token(TokenType.NUMBER,
+                        Double.toString(firstToken.parseDouble() + secondToken.parseDouble()));
             }
             case MINUS -> {
-                return new Token(TokenType.NUMBER, Double.toString(firstToken.parseDouble() - secondToken.parseDouble()));
+                return new Token(TokenType.NUMBER,
+                        Double.toString(firstToken.parseDouble() - secondToken.parseDouble()));
             }
             case DIVIDE -> {
                 if (secondToken.parseDouble() == 0) {
                     throw new DivisionByZeroException();
                 }
-                return new Token(TokenType.NUMBER, Double.toString(firstToken.parseDouble() / secondToken.parseDouble()));
+                return new Token(TokenType.NUMBER,
+                        Double.toString(firstToken.parseDouble() / secondToken.parseDouble()));
             }
             case MULTIPLY -> {
-                return new Token(TokenType.NUMBER, Double.toString(firstToken.parseDouble() * secondToken.parseDouble()));
+                return new Token(TokenType.NUMBER,
+                        Double.toString(firstToken.parseDouble() * secondToken.parseDouble()));
             }
             case POWER -> {
                 if (firstToken.parseDouble() == 0 && secondToken.parseDouble() <= 0
                         || firstToken.parseDouble() < 0 && secondToken.parseDouble() % 1 != 0) {
                     throw new UndefinedBehaviourException();
                 }
-                return new Token(TokenType.NUMBER, Double.toString(Math.pow(firstToken.parseDouble(),
-                        secondToken.parseDouble())));
+                return new Token(TokenType.NUMBER,
+                        Double.toString(Math.pow(firstToken.parseDouble(), secondToken.parseDouble())));
+            }
+            case MOD -> {
+                if (secondToken.parseDouble() == 0) {
+                    throw new DivisionByZeroException();
+                }
+                return new Token(TokenType.NUMBER,
+                        Double.toString(firstToken.parseDouble() % secondToken.parseDouble()));
+            }
+            case DIV -> {
+                if (secondToken.parseDouble() == 0) {
+                    throw new DivisionByZeroException();
+                }
+                return new Token(TokenType.NUMBER,
+                        Double.toString((firstToken.parseDouble() / secondToken.parseDouble())
+                                - firstToken.parseDouble() / secondToken.parseDouble() % 1));
             }
             default -> throw new NotPerformableTokenException(value);
         }
@@ -239,7 +273,43 @@ enum TokenType {
     OPEN_BRACKET,
     CLOSE_BRACKET,
     COMMA,
-    POWER
+    POWER,
+    MOD,
+    DIV,
+    ABS,
+    SINUS,
+    COS,
+    TANGENT,
+    COTANGENT,
+    SECANT,
+    CSC,
+    ASIN,
+    ACOS,
+    ATAN,
+    ACOT,
+    ASEC,
+    ACSC,
+    SINH,
+    COSH,
+    TANH,
+    COTH,
+    SECH,
+    CSCH,
+    CEIL,
+    FLOOR,
+    ROUND,
+    SIGN
+}
+
+class NotCalculateTokenException extends Exception {
+    String expression;
+    NotCalculateTokenException(String expression) {
+        this.expression = expression;
+    }
+    @Override
+    public String getMessage() {
+        return "The token" + expression + "cannot be calculated, error in parsing the input";
+    }
 }
 
 class NotPerformableTokenException extends Exception {
