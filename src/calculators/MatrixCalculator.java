@@ -38,8 +38,6 @@ public class MatrixCalculator implements Calculator{
                 }
             } catch (IncompatibleSizeException e) {
                 calculatorApp.println(e.getMessage());
-            } catch (Exception e) {
-                calculatorApp.println("Problem with the input, try again");
             }
         } while (operation != 0);
     }
@@ -79,29 +77,39 @@ class Matrix {
         columns = check;
         calculatorApp.println("Input values row by row");
         ArrayList<Double[]> newValues = new ArrayList<>();
-        for (int i = 0; i < columns; i++) {
+        for (int i = 0; i < rows; i++) {
             ArrayList<Double> row = new ArrayList<>();
             String[] input = calculatorApp.readLine().split(" ");
-            for (String value : input) {
-                double doubleCheck;
-                boolean trigger = false;
-                do {
-                    try {
-                        doubleCheck = Double.parseDouble(value);
-                        trigger = true;
-                    } catch (Exception e) {
-                        calculatorApp.println(value + " is not a number, what did you want to type?");
-                        value = calculatorApp.readLine();
-                        doubleCheck = 0;
-                    }
-                } while (doubleCheck == 0 && !trigger);
-                row.add(doubleCheck);
-            }
-            Double[] costyl = new Double[columns];
-            newValues.add(row.toArray(costyl));
+            int counter;
+            do {
+                counter = 0;
+                for (String value : input) {
+                    counter++;
+                    double doubleCheck;
+                    boolean trigger = false;
+                    do {
+                        try {
+                            doubleCheck = Double.parseDouble(value);
+                            trigger = true;
+                        } catch (Exception e) {
+                            calculatorApp.println(value + " is not a number, what did you want to type?");
+                            value = calculatorApp.readLine();
+                            doubleCheck = 0;
+                        }
+                    } while (doubleCheck == 0 && !trigger);
+                    row.add(doubleCheck);
+                }
+                if (counter != columns) {
+                    calculatorApp.println(
+                            "Number of elements in the row is not equal to the number of columns, try again"
+                    );
+                }
+            } while (counter != columns);
+            Double[] rowToArray = new Double[columns];
+            newValues.add(row.toArray(rowToArray));
         }
-        Double[][] secondCostyl= new Double[rows][columns];
-        values = newValues.toArray(secondCostyl);
+        Double[][] matrixToArray= new Double[rows][columns];
+        values = newValues.toArray(matrixToArray);
     }
 
     Matrix(int rows, int columns, Double[][] values) {
@@ -175,7 +183,7 @@ class Matrix {
 
 class IncompatibleSizeException extends Exception {
     @Override
-    public String toString() {
+    public String getMessage() {
         return "The operation cannot be performed, the matrices sizes are incompatible";
     }
 }
