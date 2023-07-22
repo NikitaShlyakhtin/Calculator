@@ -24,21 +24,20 @@ public class BMICalculator implements Calculator {
             }
         } while (weight == 0);
         Human human = new Human(height, weight);
-        calculatorApp.println("BMI: " + human.BMI);
-        calculatorApp.println("Interpretation: " + human.interpretBMI());
+        human.interpret(calculatorApp);
         calculatorApp.readLine();
     }
 }
 
 class Human {
-    public final double BMI;
+    private final double BMI;
 
     public Human(double height, double weight) {
         double heightInMeters = height / 100.0;
         BMI = weight / (heightInMeters * heightInMeters);
     }
 
-    public String interpretBMI() {
+    private String interpretBMI() {
         if (BMI < 18.5) {
             return "Underweight";
         } else if (BMI >= 18.5 && BMI < 25) {
@@ -48,5 +47,10 @@ class Human {
         } else {
             return "Obese";
         }
+    }
+
+    public void interpret(CalculatorApp calculatorApp) throws IOException {
+        calculatorApp.println("BMI = " + BMI);
+        calculatorApp.println("Interpretation = " + interpretBMI());
     }
 }
