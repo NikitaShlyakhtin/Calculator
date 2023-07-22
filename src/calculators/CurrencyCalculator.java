@@ -9,7 +9,7 @@ import java.util.Map;
 
 class Currency {
     public final String code;
-    public final double rate;
+    private final double rate;
 
     public Currency(String code) {
         this.code = code;
