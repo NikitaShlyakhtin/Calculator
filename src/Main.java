@@ -12,14 +12,16 @@ enum CalculatorTypes {
     DND_POINT_BUY,
     BMI,
     TEMPERATURE,
-    MATRIX
+    MATRIX,
+    RANDOM
 }
 
 public class Main {
     public static void main(String[] args) throws IOException {
         CalculatorApp calculatorApp = new CalculatorApp();
 
-        List<String> welcomeMessage = Arrays.asList("Welcome to Calculator!",
+        List<String> welcomeMessage = Arrays
+                .asList("Welcome to Calculator!",
                 "Please, select calculator:",
                 "0 - Basic calculator",
                 "1 - Currency calculator",
@@ -27,7 +29,8 @@ public class Main {
                 "3 - DnD Point-buy calculator",
                 "4 - BMI calculator",
                 "5 - Temperature calculator",
-                "6 - Matrix calculator");
+                "6 - Matrix calculator",
+                "7 - Random calculator");
 
         for (String line : welcomeMessage) {
             calculatorApp.println(line);
@@ -63,6 +66,10 @@ public class Main {
             }
             case MATRIX -> {
                 calculator = new MatrixCalculator();
+                calculator.work(calculatorApp);
+            }
+            case RANDOM -> {
+                calculator = new RandomNumberCalculator();
                 calculator.work(calculatorApp);
             }
             default -> calculatorApp.println("Not a valid type of calculator");
