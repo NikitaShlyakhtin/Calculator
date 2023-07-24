@@ -14,10 +14,16 @@ public class BasicCalculator implements Calculator {
         calculatorApp.println("Available operations:");
         calculatorApp.println("Basic arithmetic operations: \"+\", \"-\", \"*\", \"/\", \"pow ( a , b )\"");
         calculatorApp.println("Comparison operations: \"min ( a , b )\", \"max ( a , b )\"");
-        calculatorApp.println("Trigonometric functions: \"sin ( a )\", \"cos ( a )\", \"tan ( a )\", \"cot ( a )\", \"sec ( a )\", \"csc ( a )\"");
-        calculatorApp.println("Inverse trigonometric functions: \"arcsin ( a )\", \"arccos ( a )\", \"arctan ( a )\", \"arccot ( a )\"");
+        calculatorApp.println(
+                "Trigonometric functions: \"sin ( a )\", \"cos ( a )\", \"tan ( a )\", \"cot ( a )\", \"sec ( a )\", \"csc ( a )\""
+        );
+        calculatorApp.println(
+                "Inverse trigonometric functions: \"arcsin ( a )\", \"arccos ( a )\", \"arctan ( a )\", \"arccot ( a )\""
+        );
         calculatorApp.println("Hyperbolic functions: \"sinh ( a )\", \"cosh ( a )\", \"tanh ( a )\", \"coth ( a )\"");
-        calculatorApp.println("Number theory: \"mod ( a , b )\", \"div ( a , b )\", \"ceil ( a )\", \"floor ( a )\", \"abs ( a )\", \"round ( a )\", \"sign ( a )\"");
+        calculatorApp.println(
+                "Number theory: \"mod ( a , b )\", \"div ( a , b )\", \"ceil ( a )\", \"floor ( a )\", \"abs ( a )\", \"round ( a )\", \"sign ( a )\""
+        );
         calculatorApp.println("Please, input operands separated by space");
         calculatorApp.println("Double numbers should be input via \".\"");
         calculatorApp.println("To stop working, write STOP");
