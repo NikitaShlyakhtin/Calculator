@@ -39,6 +39,8 @@ public class Main {
         CalculatorTypes calculatorType = CalculatorTypes.values()[Integer.parseInt(calculatorApp.readLine())];
         Calculator calculator;
 
+        calculatorApp.clear();
+
         switch (calculatorType) {
             case BASIC -> {
                 calculator = new BasicCalculator();

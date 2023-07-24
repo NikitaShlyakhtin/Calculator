@@ -97,6 +97,12 @@ public class CalculatorApp {
         return stringBuilder.toString();
     }
 
+    public void clear() throws IOException {
+        xCounter = 0;
+        yCounter = 0;
+        terminal.clearScreen();
+    }
+
     public void close() throws IOException {
         terminal.close();
         System.exit(0);
