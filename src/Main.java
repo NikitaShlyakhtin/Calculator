@@ -13,7 +13,8 @@ enum CalculatorTypes {
     BMI,
     TEMPERATURE,
     MATRIX,
-    RANDOM
+    RANDOM,
+    LONG_DISTANCE
 }
 
 public class Main {
@@ -30,7 +31,8 @@ public class Main {
                 "4 - BMI calculator",
                 "5 - Temperature calculator",
                 "6 - Matrix calculator",
-                "7 - Random calculator");
+                "7 - Random calculator",
+                "8 - Distance calculator");
 
         for (String line : welcomeMessage) {
             calculatorApp.println(line);
@@ -72,6 +74,10 @@ public class Main {
             }
             case RANDOM -> {
                 calculator = new RandomNumberCalculator();
+                calculator.work(calculatorApp);
+            }
+            case LONG_DISTANCE -> {
+                calculator = new LongDistanceCalculator();
                 calculator.work(calculatorApp);
             }
             default -> calculatorApp.println("Not a valid type of calculator");
